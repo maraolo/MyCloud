@@ -22,10 +22,13 @@ variable "EmployeeID" {
   description = "ID"
   default = "868675764"
 }
-variable "SGID" {
-  description = "SGID"
-  default = "sg-0788fc00b00093cf1"
+/* variable "SGID" {
+  description = "SGID" 
+}*/
+variable "subnet_id" {
+  description = "SN ID"
 }
-variable "vpc_id" {
-  description = "VPC ID"
+
+variable "cucu" {
+  description = "cucuvar"
 }
