@@ -1,15 +1,12 @@
 resource "aws_instance" "WebServer" {
-  // ...
   ami = "${var.ami}"
   instance_type = "${var.In_Type}"
   # security_groups = ["${aws_security_group.MyWebDMZ.name}"]
-  subnet_id = "${var.subnet_id}"
-  # security_groups = ["${aws_security_group.example_rails_app.name}"]
   # user_data = "${data.template_file.user_data.rendered}"
   # key_name = "${var.key_pair_name}"
   
   tags {
-    Name = "${var.cucu}"
+    Name = "${var.EC2name}"
     Department = "${var.Dep}"
     Team = "${var.Team}"
     EmployeeID = "${var.EmployeeID}"

@@ -1,6 +1,6 @@
-variable "EC2Name" {
+variable "EC2name" {
   description = "The name of the EC2 instance"
-  default = "Web Server"
+  default = ""
 }
 variable "ami" {
   description = "The ID of the AMI"
@@ -22,13 +22,7 @@ variable "EmployeeID" {
   description = "ID"
   default = "868675764"
 }
-/* variable "SGID" {
-  description = "SGID" 
-}*/
+
 variable "subnet_id" {
   description = "SN ID"
-}
-
-variable "cucu" {
-  description = "cucuvar"
 }
