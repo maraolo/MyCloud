@@ -8,6 +8,7 @@ module "network" {
 module "EC2" {
     source = "./modules/ec2"
     subnet_id = "${module.network.subnet_id}"
-    # subnet_id = ${aws_subnet.pusubnet.subnet_id}"
+    security_groups = ["${module.network.security_groups}"]
+    # security_groups = ["${module.network.security_groups}"]
     EC2name = "Web Server"
 }

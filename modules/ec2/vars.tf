@@ -22,7 +22,10 @@ variable "EmployeeID" {
   description = "ID"
   default = "868675764"
 }
-
 variable "subnet_id" {
   description = "SN ID"
+}  
+variable security_groups {
+    description = "Sec Group Ids"
+    type = "list"
 }
