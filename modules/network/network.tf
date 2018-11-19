@@ -12,33 +12,40 @@ resource "aws_network_acl" "main" {
   vpc_id = "${aws_vpc.MyVPC.id}"
   subnet_ids = ["${aws_subnet.pusubnet1a.id}","${aws_subnet.pusubnet1b.id} "]
 
-  egress {
-    protocol   = "tcp"
-    rule_no    = 100
-    action     = "allow"
-    cidr_block = "10.3.0.0/18"
-    from_port  = 443
-    to_port    = 443
-  }
-
   ingress {
     protocol   = "tcp"
     rule_no    = 100
     action     = "allow"
-    cidr_block = "10.3.0.0/18"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 443
+    to_port    = 443
+  }
+   ingress {
+    protocol   = "tcp"
+    rule_no    = 110
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
     from_port  = 80
     to_port    = 80
   }
 
-   /* ingress {
+   ingress {
     protocol   = "ssh"
-    rule_no    = 200
+    rule_no    = 120
     action     = "allow"
     cidr_block = "0.0.0.0/0"
     from_port  = 22
     to_port    = 22
   }*/
-
+ 
+ egress {
+    protocol   = "tcp"
+    rule_no    = 100
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 443
+    to_port    = 443
+  }
   tags {
     Name = "main ACL Paolo"
   }
@@ -51,6 +58,17 @@ resource "aws_internet_gateway" "igw" {
     Name = "mainIGW"
   }
 }
+
+# Create Route Table 
+resource "aws_internet_gateway" "igw" {
+  vpc_id = "${aws_vpc.MyVPC.id}"
+
+  tags {
+    Name = "mainIGW"
+  }
+}
+
+
 # Create the public subnet in 1a
  resource "aws_subnet" "pusubnet1a" {
   vpc_id = "${aws_vpc.MyVPC.id}"
