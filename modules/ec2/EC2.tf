@@ -1,4 +1,4 @@
-resource "aws_instance" "WebServer" {
+resource "aws_instance" "instance" {
   ami = "${var.ami}"
   instance_type = "${var.In_Type}"
   subnet_id = "${var.subnet_id}"
@@ -8,8 +8,5 @@ resource "aws_instance" "WebServer" {
   
   tags {
     Name = "${var.EC2name}"
-    Department = "${var.Dep}"
-    Team = "${var.Team}"
-    EmployeeID = "${var.EmployeeID}"
   }
 }
