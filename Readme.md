@@ -16,6 +16,7 @@
 
 ToDos: 
     - apply ACL to pr Subnet also?
+    - is ACL so correct (ports)?
 
 http://www.blog.labouardy.com/manage-aws-vpc-as-infrastructure-as-code-with-terraform/
 •	Roles per accedere altre risorse?
