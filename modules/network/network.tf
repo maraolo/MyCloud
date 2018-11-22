@@ -36,7 +36,7 @@ resource "aws_network_acl" "main" {
     cidr_block = "0.0.0.0/0"
     from_port  = 22
     to_port    = 22
-  }*/
+  }
  
  egress {
     protocol   = "tcp"
@@ -59,15 +59,31 @@ resource "aws_internet_gateway" "igw" {
   }
 }
 
-# Create Route Table 
-resource "aws_internet_gateway" "igw" {
+# Define the route table with public access
+resource "aws_route_table" "web-public-rt" {
   vpc_id = "${aws_vpc.MyVPC.id}"
-
+ 
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = "${aws_internet_gateway.igw.id}"
+  }
+ 
   tags {
-    Name = "mainIGW"
+    Name = "Public Subnet RT"
   }
 }
+ 
+# Assign the route table to the public Subnet 1a
+resource "aws_route_table_association" "web-public1a-rt-ass" {
+  subnet_id = "${aws_subnet.pusubnet1a.id}"
+  route_table_id = "${aws_route_table.web-public-rt.id}"
+}
 
+# Assign the route table to the public Subnet 1b
+resource "aws_route_table_association" "web-public1b-rt-ass" {
+  subnet_id = "${aws_subnet.pusubnet1b.id}"
+  route_table_id = "${aws_route_table.web-public-rt.id}"
+}
 
 # Create the public subnet in 1a
  resource "aws_subnet" "pusubnet1a" {
