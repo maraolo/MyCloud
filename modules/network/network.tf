@@ -10,7 +10,7 @@ resource "aws_vpc" "MyVPC" {
 # Create the ACL for VPC
 resource "aws_network_acl" "main" {
   vpc_id = "${aws_vpc.MyVPC.id}"
-  subnet_ids = ["${aws_subnet.pusubnet1a.id}","${aws_subnet.pusubnet1b.id} "]
+  subnet_ids = ["${aws_subnet.pusubnet1a.id}","${aws_subnet.pusubnet1b.id}"]
 
   ingress {
     protocol   = "tcp"
@@ -30,7 +30,7 @@ resource "aws_network_acl" "main" {
   }
 
    ingress {
-    protocol   = "ssh"
+    protocol   = "tcp"
     rule_no    = 120
     action     = "allow"
     cidr_block = "0.0.0.0/0"
@@ -38,13 +38,21 @@ resource "aws_network_acl" "main" {
     to_port    = 22
   }
  
- egress {
+ /* egress {
     protocol   = "tcp"
     rule_no    = 100
     action     = "allow"
     cidr_block = "0.0.0.0/0"
     from_port  = 443
     to_port    = 443
+  }*/ 
+egress {
+    protocol   = "tcp"
+    rule_no    = 110
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 80
+    to_port    = 80
   }
   tags {
     Name = "main ACL Paolo"
@@ -91,9 +99,8 @@ resource "aws_route_table_association" "web-public1b-rt-ass" {
   cidr_block = "10.0.1.0/24"
   availability_zone = "eu-central-1a"
   
- 
   tags {
-   Name = "Public Subnet"
+   Name = "Public Subnet 1"
   }
 }
 
@@ -103,9 +110,8 @@ resource "aws_route_table_association" "web-public1b-rt-ass" {
   cidr_block = "10.0.2.0/24"
   availability_zone = "eu-central-1b"
 
- 
   tags {
-   Name = "Public Subnet"
+   Name = "Public Subnet 2"
   }
 }
 # Create the private subnet
@@ -121,7 +127,7 @@ resource "aws_route_table_association" "web-public1b-rt-ass" {
 
 # Define the security group for WebServer instance
 resource "aws_security_group" "sgws" {
-  name = "vpc_test_web"
+  name = "webServerSG"
   description = "Allow incoming HTTP connections and SSH access"
   vpc_id = "${aws_vpc.MyVPC.id}"
  
@@ -158,7 +164,7 @@ resource "aws_security_group" "sgws" {
   }
 }
 resource "aws_security_group" "sgdb" {
-  name = "vpc_test_web"
+  name = "DBServerSG"
   description = "Allow incoming MySQL/Aurora connections and SSH access"
   vpc_id = "${aws_vpc.MyVPC.id}"
  
@@ -184,6 +190,6 @@ resource "aws_security_group" "sgdb" {
   }
 
    tags {
-    Name = "SG for Web Server"
+    Name = "SG for DB Server"
   }
 }
