@@ -29,3 +29,19 @@ variable security_groups {
     description = "Sec Group Ids"
     type = "list"
 }
+variable key_pair_name {
+  description = "Keypair"
+  default = "maKEyTutorial"
+} 
+
+/* data "template_file" "user_data" {
+  template = "${file("${path.module}/bashscript.sh")}"
+  vars {
+    name = "${var.name}"
+  }
+}
+
+resource "aws_instance" "nat" {
+ # ...
+ user_data = "${data.template_file.user_data.rendered}"
+}*/

@@ -37,15 +37,14 @@ resource "aws_network_acl" "main" {
     from_port  = 22
     to_port    = 22
   }
- 
- /* egress {
+ egress {
     protocol   = "tcp"
     rule_no    = 100
     action     = "allow"
     cidr_block = "0.0.0.0/0"
-    from_port  = 443
-    to_port    = 443
-  }*/ 
+    from_port  = 1024
+    to_port    = 65535
+  }
 egress {
     protocol   = "tcp"
     rule_no    = 110
@@ -66,7 +65,19 @@ resource "aws_internet_gateway" "igw" {
     Name = "mainIGW"
   }
 }
+# Define the eip to be used for NAT GW
+resource "aws_eip" "eip4NAT" {
+  vpc = true
+}
+#define NAT GW in public Subnet 1a
+resource "aws_nat_gateway" "ngw" {
+  allocation_id = "${aws_eip.eip4NAT.id}"
+  subnet_id = "${aws_subnet.pusubnet1a.id}"
 
+  tags {
+    Name = "NatGW"
+  }
+}
 # Define the route table with public access
 resource "aws_route_table" "web-public-rt" {
   vpc_id = "${aws_vpc.MyVPC.id}"
@@ -80,7 +91,19 @@ resource "aws_route_table" "web-public-rt" {
     Name = "Public Subnet RT"
   }
 }
+# Define the route table with private access only
+resource "aws_route_table" "private-rt" {
+  vpc_id = "${aws_vpc.MyVPC.id}"
  
+  route {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = "${aws_nat_gateway.ngw.id}"
+  }
+ 
+  tags {
+    Name = "private Subnet RT"
+  }
+}
 # Assign the route table to the public Subnet 1a
 resource "aws_route_table_association" "web-public1a-rt-ass" {
   subnet_id = "${aws_subnet.pusubnet1a.id}"
@@ -88,9 +111,15 @@ resource "aws_route_table_association" "web-public1a-rt-ass" {
 }
 
 # Assign the route table to the public Subnet 1b
-resource "aws_route_table_association" "web-public1b-rt-ass" {
+resource "aws_route_table_association" "web-public1b-rt-ass1" {
   subnet_id = "${aws_subnet.pusubnet1b.id}"
   route_table_id = "${aws_route_table.web-public-rt.id}"
+}
+
+# Assign the route table to the private Subnet 1a
+resource "aws_route_table_association" "web-private1a-rt-ass1" {
+  subnet_id = "${aws_subnet.prsubnet1a.id}"
+  route_table_id = "${aws_route_table.private-rt.id}"
 }
 
 # Create the public subnet in 1a
