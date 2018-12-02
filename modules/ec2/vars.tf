@@ -18,10 +18,6 @@ variable "Team" {
   description = "The Team"
   default = "RandD"
 }
-variable "EmployeeID" {
-  description = "ID"
-  default = "868675764"
-}
 variable "subnet_id" {
   description = "SN ID"
 }  

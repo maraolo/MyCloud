@@ -11,6 +11,7 @@ resource "aws_instance" "instance" {
   vpc_security_group_ids = ["${var.security_groups}"]
   associate_public_ip_address = "true"
   user_data = "${data.template_file.init.rendered}"
+
   key_name = "${var.key_pair_name}"
   
   tags {

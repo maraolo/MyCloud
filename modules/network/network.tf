@@ -8,7 +8,7 @@ resource "aws_vpc" "MyVPC" {
 }
 
 # Create the ACL for VPC
-resource "aws_network_acl" "main" {
+/* resource "aws_network_acl" "main" {
   vpc_id = "${aws_vpc.MyVPC.id}"
   subnet_ids = ["${aws_subnet.pusubnet1a.id}","${aws_subnet.pusubnet1b.id}"]
 
@@ -39,7 +39,7 @@ resource "aws_network_acl" "main" {
   }
  egress {
     protocol   = "tcp"
-    rule_no    = 100
+    rule_no    = 120
     action     = "allow"
     cidr_block = "0.0.0.0/0"
     from_port  = 1024
@@ -47,16 +47,24 @@ resource "aws_network_acl" "main" {
   }
 egress {
     protocol   = "tcp"
-    rule_no    = 110
+    rule_no    = 100
     action     = "allow"
     cidr_block = "0.0.0.0/0"
     from_port  = 80
     to_port    = 80
   }
+ egress {
+    protocol   = "tcp"
+    rule_no    = 110
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 443
+    to_port    = 443
+}
   tags {
     Name = "main ACL Paolo"
   }
-}
+} */
 # Create IGW
 resource "aws_internet_gateway" "igw" {
   vpc_id = "${aws_vpc.MyVPC.id}"
@@ -127,7 +135,7 @@ resource "aws_route_table_association" "web-private1a-rt-ass1" {
   vpc_id = "${aws_vpc.MyVPC.id}"
   cidr_block = "10.0.1.0/24"
   availability_zone = "eu-central-1a"
-  
+  map_public_ip_on_launch = true
   tags {
    Name = "Public Subnet 1"
   }
@@ -138,7 +146,7 @@ resource "aws_route_table_association" "web-private1a-rt-ass1" {
   vpc_id = "${aws_vpc.MyVPC.id}"
   cidr_block = "10.0.2.0/24"
   availability_zone = "eu-central-1b"
-
+  map_public_ip_on_launch = true
   tags {
    Name = "Public Subnet 2"
   }
@@ -184,6 +192,12 @@ resource "aws_security_group" "sgws" {
   ingress {
     from_port = 22
     to_port = 22
+    protocol = "tcp"
+    cidr_blocks =  ["0.0.0.0/0"]
+  }
+  egress {
+    from_port = 80
+    to_port = 80
     protocol = "tcp"
     cidr_blocks =  ["0.0.0.0/0"]
   }
